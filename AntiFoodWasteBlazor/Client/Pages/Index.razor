@@ -9,23 +9,19 @@
 
 
 <div>
-	<label>Stock Symbol:</label>
+	<label>Søg på postnummer:</label>
 	<input @bind="_zipCode" placeholder="Postnummer" />
 	<button @onclick="GetFoodWasteProducts">Søg</button>
 </div>
 
 @code{
-	private SallingFoodWasteService SallingFoodWasteService = new SallingFoodWasteService();
+	[Inject]
+	private SallingFoodWasteService SallingFoodWasteService { get; set; }
 
 	private string _zipCode;
 
 	List<FoodWasteProduct> foodWasteProductList = new List<FoodWasteProduct>();
 
-
-	protected override async Task OnInitializedAsync()
-	{
-		
-	}
 
 	private async Task GetFoodWasteProducts()
 	{

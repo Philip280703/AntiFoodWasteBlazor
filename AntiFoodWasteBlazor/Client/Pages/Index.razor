@@ -5,39 +5,48 @@
 
 <h1>Velkommen til Sallings AntiFoodWaste API platform.</h1>
 
-<table class="table table-primary">
-	<thead>
-		<tr>
-			<th>Produkt</th>
-			<th>Billede</th>
-			<th>Pris</th>
-			<th>Original pris</th>
-			<th>Count</th>
-			<th>Units</th>
-			<th>Butik</th>
-		</tr>
-	</thead>
-	<tbody>
-	@foreach (var product in foodWasteProductList)
-	{
-	<tr>
-		<td><b>@product.Description</b></td>
-		<td><img src=@product.ImageUrl/></td>
-		<td><b>@product.NewPrice kr.</b></td>
-		<td>@product.OriginalPrice kr.</td>
-		<td>@product.StockCount</td>
-		<td>@product.StockUnit</td>
-		<td>@product.store.Name</td>
-	</tr>
-	}
-	</tbody</table>
-
-
 <div>
 	<label>Søg på postnummer:</label>
 	<input @bind="_zipCode" placeholder="Postnummer" />
-	<button @onclick="GetFoodWasteProducts">Søg</button>
+	<button class="btn btn-primary" @onclick="GetFoodWasteProducts">Søg</button>
 </div>
+
+
+@if (foodWasteProductList.Any())
+{
+    <div class="product-grid">
+        @foreach (var product in foodWasteProductList)
+        {
+            <div class="product-card">
+                @if (!string.IsNullOrEmpty(product.ImageUrl))
+                {
+                    <img src="@product.ImageUrl" alt="@product.Description" />
+                }
+                else
+                {
+                    <div class="default-image">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="gray" class="bi bi-image" viewBox="0 0 16 16">
+                            <path d="M6.002 5.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0" />
+                            <path d="M2.002 1a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V3a2 2 0 0 0-2-2zm12 1a1 1 0 0 1 1 1v6.5l-3.777-1.947a.5.5 0 0 0-.577.093l-3.71 3.71-2.66-1.772a.5.5 0 0 0-.63.062L1.002 12V3a1 1 0 0 1 1-1z" />
+                        </svg>
+                    </div>
+                }
+
+                <div class="product-title">@product.Description</div>
+                <div>
+                    <span class="product-price">@product.NewPrice kr.</span>
+                    <span class="product-original-price">@product.OriginalPrice kr.</span>
+                </div>
+                <div class="product-stock">Lager: @product.StockCount @product.StockUnit</div>
+                <div class="store-name">@product.store.Name</div>
+            </div>
+        }
+    </div>
+}
+else
+{
+    <p>Indtast et postnummer og klik "Søg" for at hente varer.</p>
+}
 
 @code{
 	[Inject]

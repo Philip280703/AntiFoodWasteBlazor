@@ -51,6 +51,10 @@ namespace AntiFoodWasteBlazor.Client.Services
 						ImageUrl = item["product"]?["image"]?.ToString(),
 						NewPrice = item["offer"]?["newPrice"]?.GetValue<decimal>() ?? 0,
 						OriginalPrice = item["offer"]?["originalPrice"]?.GetValue<decimal>() ?? 0,
+						DiscountPercent = item["offer"]?["percentDiscount"]?.GetValue<decimal>() ?? 0,
+						EndDate = item["offer"]?["endTime"]?.GetValue<DateTime>() ?? DateTime.MinValue,
+						StockCount = item["offer"]?["stock"]?.GetValue<decimal>() ?? 0,
+						StockUnit = item["offer"]?["stockUnit"]?.ToString() ?? string.Empty,
 						store = store
 					};
 

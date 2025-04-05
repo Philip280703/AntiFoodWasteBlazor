@@ -3,9 +3,34 @@
 
 @page "/"
 
-<h1>Welcome to AntiFoodWaste!</h1>
+<h1>Velkommen til Sallings AntiFoodWaste API platform.</h1>
 
-<p>This is a Blazor WebAssembly application designed to help reduce food waste. Search on your danish zipcode.</p>
+<table class="table table-primary">
+	<thead>
+		<tr>
+			<th>Produkt</th>
+			<th>Billede</th>
+			<th>Pris</th>
+			<th>Original pris</th>
+			<th>Count</th>
+			<th>Units</th>
+			<th>Butik</th>
+		</tr>
+	</thead>
+	<tbody>
+	@foreach (var product in foodWasteProductList)
+	{
+	<tr>
+		<td><b>@product.Description</b></td>
+		<td><img src=@product.ImageUrl/></td>
+		<td><b>@product.NewPrice kr.</b></td>
+		<td>@product.OriginalPrice kr.</td>
+		<td>@product.StockCount</td>
+		<td>@product.StockUnit</td>
+		<td>@product.store.Name</td>
+	</tr>
+	}
+	</tbody</table>
 
 
 <div>

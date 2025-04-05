@@ -1,0 +1,17 @@
+﻿
+
+Make a class with a method of this signature: ->
+
+
+namespace AntiFoodWasteBlazor.Shared.GitIgnoreFolder
+{
+    public static class APIKey
+    {
+        public static string GetApiKey()
+        {
+            return "Your_API_Key_SallingGroup";
+        }
+    }
+}
+
+then insert your unique api key in the string above.

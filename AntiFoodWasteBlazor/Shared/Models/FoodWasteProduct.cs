@@ -12,7 +12,6 @@ namespace AntiFoodWasteBlazor.Shared.Models
         public decimal NewPrice { get; set; }
         public decimal OriginalPrice { get; set; }
         public string ImageUrl { get; set; }
-        public string StoreName { get; set; }
-        public string StoreAddress { get; set; }
+        public Store store { get; set; }    
     }
 }

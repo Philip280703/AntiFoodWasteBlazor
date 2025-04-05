@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiFoodWasteBlazor.Server", "AntiFoodWasteBlazor\Server\AntiFoodWasteBlazor.Server.csproj", "{1AC5C834-CBB2-4A99-8E56-1D6FF4B22DCD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiFoodWasteBlazor.Client", "AntiFoodWasteBlazor\Client\AntiFoodWasteBlazor.Client.csproj", "{D2940D5B-9723-4555-A4D2-DC2F289D9A66}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AntiFoodWasteBlazor.Shared", "AntiFoodWasteBlazor\Shared\AntiFoodWasteBlazor.Shared.csproj", "{D2AD5166-02EB-4AD2-B7A0-FA0E141C7BFE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AC5C834-CBB2-4A99-8E56-1D6FF4B22DCD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AC5C834-CBB2-4A99-8E56-1D6FF4B22DCD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AC5C834-CBB2-4A99-8E56-1D6FF4B22DCD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AC5C834-CBB2-4A99-8E56-1D6FF4B22DCD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2940D5B-9723-4555-A4D2-DC2F289D9A66}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2940D5B-9723-4555-A4D2-DC2F289D9A66}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2940D5B-9723-4555-A4D2-DC2F289D9A66}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2940D5B-9723-4555-A4D2-DC2F289D9A66}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D2AD5166-02EB-4AD2-B7A0-FA0E141C7BFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D2AD5166-02EB-4AD2-B7A0-FA0E141C7BFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D2AD5166-02EB-4AD2-B7A0-FA0E141C7BFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D2AD5166-02EB-4AD2-B7A0-FA0E141C7BFE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {BB781FC1-250F-47CB-9878-A2766F608760}
+	EndGlobalSection
+EndGlobal

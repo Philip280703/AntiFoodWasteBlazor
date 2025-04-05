@@ -11,9 +11,38 @@
 	<button class="btn btn-primary" @onclick="GetFoodWasteProducts">Søg</button>
 </div>
 
+<div>
+    <label>Vælg butik</label>
+    <InputSelect id="store"
+                 @bind-Value="_selectedStore"
+                 @onchange="OnStoreChanged"
+                 class="form-select">
+        <option value="">Vælg butik</option>
+        @foreach (var store in _uniqueStores)
+        {
+            <option value="@store">@store</option>
+        }
+    </InputSelect>
+</div>
+@* <div>
+    <label>Order by</label>
+</div>
 
+<div>
+    <label>tilbuds udløb</label>
+    <label> i dag: </label>
+    <InputCheckbox></InputCheckbox>
+    <label> i morgen: </label>
+    <InputCheckbox></InputCheckbox>
+</div>
+ *@
 @if (foodWasteProductList.Any())
 {
+    var filteredProducts = string.IsNullOrEmpty(_selectedStore)
+       ? foodWasteProductList
+       : foodWasteProductList.Where(p => p.store.Name == _selectedStore);
+
+
     <div class="product-grid">
         @foreach (var product in foodWasteProductList)
         {
@@ -56,9 +85,24 @@ else
 
 	List<FoodWasteProduct> foodWasteProductList = new List<FoodWasteProduct>();
 
+    private string _selectedStore = "";
+    private List<string> _uniqueStores = new();
+
 
 	private async Task GetFoodWasteProducts()
 	{
 		foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsAsync(_zipCode);
+
+        _uniqueStores = foodWasteProductList
+            .Select(p => p.store.Name)
+            .Distinct()
+            .OrderBy(name => name)
+            .ToList();
 	}
+
+    private async Task OnStoreChanged(ChangeEventArgs e)
+    {
+        _selectedStore = e.Value?.ToString();
+        StateHasChanged();
+    }
 }

@@ -5,24 +5,42 @@
 
 <h1>Velkommen til Sallings AntiFoodWaste API platform.</h1>
 
-<div>
-	<label>Søg på postnummer:</label>
-	<input @bind="_zipCode" placeholder="Postnummer" />
-	<button class="btn btn-primary" @onclick="GetFoodWasteProducts">Søg</button>
+@* ShowModal vises når siden loades *@
+@if (showZipModal)
+{
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h3>Velkommen!</h3>
+            <p>Indtast dit postnummer for at finde Anti Food Waste produkter.</p>
+            <input @bind="_zipCode" placeholder="Postnummer" class="form-control" />
+            <button class="btn btn-primary mt-2" @onclick="OnZipCodeEntered">OK</button>
+        </div>
+    </div>
+}
+
+<div class="d-flex align-items-center gap-2 mb-3">
+    <div>
+        <label class="me-2">Vælg butik</label>
+        <InputSelect @bind-Value="_selectedStore" class="form-select w-auto" @onchange="OnStoreChanged">
+            <option value="">Vælg butik</option>
+            @foreach (var store in _uniqueStores)
+            {
+                <option value="@store">@store</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div>
+        <label class="me-2">Sortér efter</label>
+        <InputSelect @bind-Value="_sortOrder" class="form-select w-auto">
+            <option value="">Standard</option>
+            <option value="priceAsc">Pris: Lav til høj</option>
+            <option value="priceDesc">Pris: Høj til lav</option>
+        </InputSelect>
+    </div>
 </div>
 
-<div>
-    <label>Vælg butik</label>
-    <InputSelect @bind-Value="_selectedStore" class="form-select" @onchange="OnStoreChanged">
-        <option value="">Vælg butik</option>
-        @foreach (var store in _uniqueStores)
-        {
-            <option value="@store">@store</option>
-        }
-    </InputSelect>
-</div>
 
-<p>Valgt butik: @_selectedStore</p>
 @* <div>
     <label>Order by</label>
 </div>
@@ -90,6 +108,10 @@ else
 
     private Store _store = new Store();
 
+    private bool showZipModal = true;
+
+    private string _sortOrder = "";
+
 
 	private async Task GetFoodWasteProducts()   
 	{
@@ -120,6 +142,13 @@ else
         }
 
         await Task.CompletedTask;
+    }
+
+
+    private async Task OnZipCodeEntered()
+    {
+        showZipModal = false;
+        await GetFoodWasteProducts();
     }
 
 }

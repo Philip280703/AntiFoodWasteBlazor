@@ -3,39 +3,44 @@
 
 @page "/"
 
-<h1>Velkommen til Sallings AntiFoodWaste API platform.</h1>
+<h2>Salling AntiFoodWaste</h2>
 
-<div>
-	<label>Søg på postnummer:</label>
-	<input @bind="_zipCode" placeholder="Postnummer" />
-	<button class="btn btn-primary" @onclick="GetFoodWasteProducts">Søg</button>
+@* ShowModal vises når siden loades *@
+@if (showZipModal)
+{
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <h3>Velkommen!</h3>
+            <p>Indtast dit postnummer for at finde Anti Food Waste produkter.</p>
+            <input @bind="_zipCode" placeholder="Postnummer" class="form-control" />
+            <button class="btn btn-primary mt-2" @onclick="OnZipCodeEntered">OK</button>
+        </div>
+    </div>
+}
+
+<div class="d-flex align-items-center gap-2 mb-3">
+    <div>
+        <label class="me-2">Vælg butik</label>
+        <InputSelect @bind-Value="_selectedStore" class="form-select w-auto" @onchange="OnStoreChanged">
+            <option value="">Vælg butik</option>
+            @foreach (var store in _uniqueStores)
+            {
+                <option value="@store">@store</option>
+            }
+        </InputSelect>
+    </div>
+
+    <div>
+        <label class="me-2">Sortér efter</label>
+        <InputSelect @bind-Value="_sortOrder" class="form-select w-auto">
+            <option value="">Standard</option>
+            <option value="priceAsc">Pris: Lav til høj</option>
+            <option value="priceDesc">Pris: Høj til lav</option>
+        </InputSelect>
+    </div>
 </div>
 
-<div>
-    <label>Vælg butik</label>
-    <InputSelect id="store"
-                 @bind-Value="_selectedStore"
-                 @onchange="OnStoreChanged"
-                 class="form-select">
-        <option value="">Vælg butik</option>
-        @foreach (var store in _uniqueStores)
-        {
-            <option value="@store">@store</option>
-        }
-    </InputSelect>
-</div>
-@* <div>
-    <label>Order by</label>
-</div>
 
-<div>
-    <label>tilbuds udløb</label>
-    <label> i dag: </label>
-    <InputCheckbox></InputCheckbox>
-    <label> i morgen: </label>
-    <InputCheckbox></InputCheckbox>
-</div>
- *@
 @if (foodWasteProductList.Any())
 {
     var filteredProducts = string.IsNullOrEmpty(_selectedStore)
@@ -44,7 +49,7 @@
 
 
     <div class="product-grid">
-        @foreach (var product in foodWasteProductList)
+        @foreach (var product in filteredProducts)
         {
             <div class="product-card">
                 @if (!string.IsNullOrEmpty(product.ImageUrl))
@@ -78,18 +83,25 @@ else
 }
 
 @code{
-	[Inject]
-	private SallingFoodWasteService SallingFoodWasteService { get; set; }
+    [Inject]
+    private SallingFoodWasteService SallingFoodWasteService { get; set; }
 
-	private string _zipCode;
+    private string _zipCode;
 
-	List<FoodWasteProduct> foodWasteProductList = new List<FoodWasteProduct>();
+    private List<FoodWasteProduct> foodWasteProductList = new List<FoodWasteProduct>();
+    private List<FoodWasteProduct> filteredProducts = new List<FoodWasteProduct>();
 
     private string _selectedStore = "";
     private List<string> _uniqueStores = new();
 
+    private Store _store = new Store();
 
-	private async Task GetFoodWasteProducts()
+    private bool showZipModal = true;
+
+    private string _sortOrder = "";
+
+
+	private async Task GetFoodWasteProducts()   
 	{
 		foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsAsync(_zipCode);
 
@@ -98,11 +110,33 @@ else
             .Distinct()
             .OrderBy(name => name)
             .ToList();
+
+        filteredProducts = new List<FoodWasteProduct>(foodWasteProductList);
 	}
 
     private async Task OnStoreChanged(ChangeEventArgs e)
     {
         _selectedStore = e.Value?.ToString();
-        StateHasChanged();
+
+        if (string.IsNullOrEmpty(_selectedStore))
+        {
+            filteredProducts = new List<FoodWasteProduct>(foodWasteProductList);
+        }
+        else
+        {
+            filteredProducts = foodWasteProductList
+                .Where(p => p.store.Name == _selectedStore)
+                .ToList();
+        }
+
+        await Task.CompletedTask;
     }
+
+
+    private async Task OnZipCodeEntered()
+    {
+        showZipModal = false;
+        await GetFoodWasteProducts();
+    }
+
 }

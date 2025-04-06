@@ -34,7 +34,8 @@ namespace AntiFoodWasteBlazor.Client.Services
 				var storeNode = entry["store"];
 				var store = new Store
 				{
-					Name = storeNode?["name"]?.ToString(),
+                    Id = storeNode?["id"]?.ToString() ?? string.Empty,
+                    Name = storeNode?["name"]?.ToString(),
 					Street = storeNode?["address"]?["street"]?.ToString(),
 					Zip = storeNode?["address"]?["zip"]?.ToString(),
 					City = storeNode?["address"]?["city"]?.ToString()

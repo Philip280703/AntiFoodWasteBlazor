@@ -3,7 +3,7 @@
 
 @page "/"
 
-<h1>Velkommen til Sallings AntiFoodWaste API platform.</h1>
+<h2>Salling AntiFoodWaste</h2>
 
 @* ShowModal vises når siden loades *@
 @if (showZipModal)
@@ -41,18 +41,6 @@
 </div>
 
 
-@* <div>
-    <label>Order by</label>
-</div>
-
-<div>
-    <label>tilbuds udløb</label>
-    <label> i dag: </label>
-    <InputCheckbox></InputCheckbox>
-    <label> i morgen: </label>
-    <InputCheckbox></InputCheckbox>
-</div>
- *@
 @if (foodWasteProductList.Any())
 {
     var filteredProducts = string.IsNullOrEmpty(_selectedStore)

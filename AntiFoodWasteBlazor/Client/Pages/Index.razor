@@ -13,10 +13,7 @@
 
 <div>
     <label>Vælg butik</label>
-    <InputSelect id="store"
-                 @bind-Value="_selectedStore"
-                 @onchange="OnStoreChanged"
-                 class="form-select">
+    <InputSelect @bind-Value="_selectedStore" class="form-select" @onchange="OnStoreChanged">
         <option value="">Vælg butik</option>
         @foreach (var store in _uniqueStores)
         {
@@ -24,6 +21,8 @@
         }
     </InputSelect>
 </div>
+
+<p>Valgt butik: @_selectedStore</p>
 @* <div>
     <label>Order by</label>
 </div>
@@ -44,7 +43,7 @@
 
 
     <div class="product-grid">
-        @foreach (var product in foodWasteProductList)
+        @foreach (var product in filteredProducts)
         {
             <div class="product-card">
                 @if (!string.IsNullOrEmpty(product.ImageUrl))
@@ -78,18 +77,21 @@ else
 }
 
 @code{
-	[Inject]
-	private SallingFoodWasteService SallingFoodWasteService { get; set; }
+    [Inject]
+    private SallingFoodWasteService SallingFoodWasteService { get; set; }
 
-	private string _zipCode;
+    private string _zipCode;
 
-	List<FoodWasteProduct> foodWasteProductList = new List<FoodWasteProduct>();
+    private List<FoodWasteProduct> foodWasteProductList = new List<FoodWasteProduct>();
+    private List<FoodWasteProduct> filteredProducts = new List<FoodWasteProduct>();
 
     private string _selectedStore = "";
     private List<string> _uniqueStores = new();
 
+    private Store _store = new Store();
 
-	private async Task GetFoodWasteProducts()
+
+	private async Task GetFoodWasteProducts()   
 	{
 		foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsAsync(_zipCode);
 
@@ -98,11 +100,26 @@ else
             .Distinct()
             .OrderBy(name => name)
             .ToList();
+
+        filteredProducts = new List<FoodWasteProduct>(foodWasteProductList);
 	}
 
     private async Task OnStoreChanged(ChangeEventArgs e)
     {
         _selectedStore = e.Value?.ToString();
-        StateHasChanged();
+
+        if (string.IsNullOrEmpty(_selectedStore))
+        {
+            filteredProducts = new List<FoodWasteProduct>(foodWasteProductList);
+        }
+        else
+        {
+            filteredProducts = foodWasteProductList
+                .Where(p => p.store.Name == _selectedStore)
+                .ToList();
+        }
+
+        await Task.CompletedTask;
     }
+
 }

@@ -22,7 +22,7 @@
 <div class="d-flex align-items-center gap-2 mb-3">
     <div>
         <label class="me-2">Vælg butik</label>
-        <InputSelect @bind-Value="_selectedStore" class="form-select w-auto" @onchange="OnStoreChanged">
+        <InputSelect @bind-Value="_selectedStore" class="form-select w-auto">
             <option value="">Vælg butik</option>
             @foreach (var store in _uniqueStores)
             {
@@ -44,13 +44,12 @@
 
 @if (foodWasteProductList.Any())
 {
-    var filteredProducts = string.IsNullOrEmpty(_selectedStore)
-       ? foodWasteProductList
-       : foodWasteProductList.Where(p => p.store.Name == _selectedStore);
+
+    var filteredProductsList = SortProducts();
 
 
     <div class="product-grid">
-        @foreach (var product in filteredProducts)
+        @foreach (var product in filteredProductsList)
         {
             <div class="product-card" @onclick="() => NavigateToProductPage(product.store.Zip, product.store.Id, product.Ean)">
                 @if (!string.IsNullOrEmpty(product.ImageUrl))
@@ -90,7 +89,6 @@ else
     private string _zipCode;
 
     private List<FoodWasteProduct> foodWasteProductList = new List<FoodWasteProduct>();
-    private List<FoodWasteProduct> filteredProducts = new List<FoodWasteProduct>();
 
     private string _selectedStore = "";
     private List<string> _uniqueStores = new();
@@ -112,25 +110,37 @@ else
             .OrderBy(name => name)
             .ToList();
 
-        filteredProducts = new List<FoodWasteProduct>(foodWasteProductList);
     }
 
-    private async Task OnStoreChanged(ChangeEventArgs e)
-    {
-        _selectedStore = e.Value?.ToString();
 
+    private List<FoodWasteProduct> SortProducts()
+    {
         if (string.IsNullOrEmpty(_selectedStore))
         {
-            filteredProducts = new List<FoodWasteProduct>(foodWasteProductList);
+            return foodWasteProductList;
         }
         else
         {
-            filteredProducts = foodWasteProductList
-                .Where(p => p.store.Name == _selectedStore)
-                .ToList();
+            if (_sortOrder == "priceAsc")
+            {
+                return foodWasteProductList
+                    .Where(s => s.store.Name == _selectedStore)
+                    .OrderBy(s => s.NewPrice)
+                    .ToList();
+            }
+            else if (_sortOrder == "priceDesc")
+            {
+                return foodWasteProductList
+                    .Where(s => s.store.Name == _selectedStore)
+                    .OrderByDescending(s => s.NewPrice)
+                    .ToList();
+            }
+            else
+            {
+                return foodWasteProductList.Where(s => s.store.Name == _selectedStore).ToList();
+            }
+            
         }
-
-        await Task.CompletedTask;
     }
 
 

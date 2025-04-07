@@ -1,7 +1,30 @@
-﻿<h3>IndividualProductPage</h3>
+﻿@using AntiFoodWasteBlazor.Client.Services
+@using AntiFoodWasteBlazor.Shared.Models
+@page "/product/{StoreID}/{Ean}"
 
-@page "/product/{StoreID:int}"
+<h3>IndividualProductPage</h3>
+
+
+
+
 
 @code {
+	[Parameter]
+	public string ?StoreID { get; set; }
+	[Parameter]
+	public string Ean { get; set; }
+
+	[Inject]
+	private SallingFoodWasteService SallingFoodWasteService { get; set; }
+
+	private List<FoodWasteProduct> foodWasteProductList = new List<FoodWasteProduct>();
+	private FoodWasteProduct _foodWasteProduct;
+	private Store _store;
+
+	protected async override Task OnInitializedAsync()
+	{
+		foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsBasedOnStoreIDAsync(StoreID);
+		
+	}
 
 }

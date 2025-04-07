@@ -2,7 +2,42 @@
 @using AntiFoodWasteBlazor.Shared.Models
 @page "/product/{ZipCode}/{StoreID}/{Ean}"
 
-<h3>IndividualProductPage</h3>
+<h4>Produkt detaljer</h4>
+
+<div class="product-card">
+	@if (_foodWasteProduct != null)
+	{
+		<div class="product-card">
+			@if (!string.IsNullOrEmpty(_foodWasteProduct.ImageUrl))
+			{
+				<img src="@_foodWasteProduct.ImageUrl" alt="@_foodWasteProduct.Description" />
+			}
+			else
+			{
+				<img src="https://via.placeholder.com/150" alt="Placeholder image" />
+			}
+			<h4>@_foodWasteProduct.Description</h4>
+			<p><b>Pris: @_foodWasteProduct.NewPrice kr.</b></p>
+			<p>Original pris: @_foodWasteProduct.OriginalPrice kr.</p>
+			<p>Besparelse: @_foodWasteProduct.DiscountPercent %</p>
+			<p>Tilbuds udløbsdato: @_foodWasteProduct.EndDate.ToLongDateString()</p>
+			<p>EAN: @_foodWasteProduct.Ean</p>
+			<p>Stock count: @_foodWasteProduct.StockCount</p>
+			<p>Stock unit: @_foodWasteProduct.StockUnit</p>
+			<p></p>
+			<h5>Butik information</h5>
+			<p>Butik: @_foodWasteProduct.store.Name</p>
+			<p>Adresse: @_foodWasteProduct.store.Street, @_foodWasteProduct.store.Zip @_foodWasteProduct.store.City</p>
+			
+		</div>
+	}
+	else
+	{
+		<p>Produkt ikke fundet.</p>
+	}
+</div>
+
+
 
 
 @code {
@@ -17,13 +52,14 @@
 	[Inject]
 	private SallingFoodWasteService SallingFoodWasteService { get; set; }
 
-	private List<FoodWasteProduct> foodWasteProductList = new List<FoodWasteProduct>();
+	private List<FoodWasteProduct> _foodWasteProductList = new List<FoodWasteProduct>();
 	private FoodWasteProduct _foodWasteProduct;
 	private Store _store;
 
 	protected async override Task OnInitializedAsync()
 	{
-		foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsBasedOnStoreIDAsync(ZipCode, StoreID);
+		_foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsBasedOnStoreIDAsync(ZipCode, StoreID);
+		_foodWasteProduct = _foodWasteProductList.FirstOrDefault(p => p.Ean == Ean);
 		
 	}
 

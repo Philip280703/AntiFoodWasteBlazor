@@ -6,6 +6,12 @@
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Pages\IndividualProductPage.razor.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Pages\IndividualProductPage.razor.css" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="8.0.14" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="8.0.14" PrivateAssets="all" />
   </ItemGroup>

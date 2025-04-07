@@ -32,5 +32,24 @@ namespace AntiFoodWasteBlazor.Server.Controllers
 
 			return Content(content, "application/json");
 		}
-	}
+
+
+		[HttpGet("{storeID}")]
+		public async Task<IActionResult> GetProductsBasedOnStoreAsync(string storeID)
+		{
+			var client = _httpClientFactory.CreateClient();
+			var request = new HttpRequestMessage(
+				HttpMethod.Get,
+				$"https://api.sallinggroup.com/v1/food-waste/?id={storeID}");
+
+			request.Headers.Authorization =
+				new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _apiKey);
+
+			var response = await client.SendAsync(request);
+			var content = await response.Content.ReadAsStringAsync();
+
+			return Content(content, "application/json");
+		}
+
+    }
 }

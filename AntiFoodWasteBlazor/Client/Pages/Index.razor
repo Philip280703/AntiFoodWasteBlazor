@@ -37,7 +37,14 @@
             <option value="">Standard</option>
             <option value="priceAsc">Pris: Lav til høj</option>
             <option value="priceDesc">Pris: Høj til lav</option>
+            <option value="besparelseAsc">Besparelse: Lav til høj</option>
+            <option value="besparelseDesc">Besparelse: Høj til lav</option>
         </InputSelect>
+    </div>
+
+    <div>
+        <label class="me-2">Søg efter produkt</label>
+        <input @bind="_searchText" class="form-control w-auto" placeholder="Søg efter produkt..." />
     </div>
 </div>
 
@@ -99,6 +106,7 @@ else
 
     private string _sortOrder = "";
 
+    private string _searchText = "";
 
     private async Task GetFoodWasteProducts()   
     {
@@ -112,35 +120,39 @@ else
 
     }
 
-
     private List<FoodWasteProduct> SortProducts()
     {
-        if (string.IsNullOrEmpty(_selectedStore))
+        // Start med hele listen
+        IEnumerable<FoodWasteProduct> result = foodWasteProductList;
+
+        // Filtrér på butik, hvis valgt
+        if (!string.IsNullOrEmpty(_selectedStore))
         {
-            return foodWasteProductList;
+            result = result.Where(p => p.store.Name == _selectedStore);
         }
-        else
+
+        // Filtrér på søgefelt (beskrivelse), hvis noget er indtastet
+        if (!string.IsNullOrEmpty(_searchText))
         {
-            if (_sortOrder == "priceAsc")
-            {
-                return foodWasteProductList
-                    .Where(s => s.store.Name == _selectedStore)
-                    .OrderBy(s => s.NewPrice)
-                    .ToList();
-            }
-            else if (_sortOrder == "priceDesc")
-            {
-                return foodWasteProductList
-                    .Where(s => s.store.Name == _selectedStore)
-                    .OrderByDescending(s => s.NewPrice)
-                    .ToList();
-            }
-            else
-            {
-                return foodWasteProductList.Where(s => s.store.Name == _selectedStore).ToList();
-            }
-            
+            result = result.Where(p =>
+                p.Description != null &&
+                p.Description.Contains(_searchText, StringComparison.OrdinalIgnoreCase));
         }
+
+        // Sortér, hvis sorteringsvalg er foretaget
+        if (!string.IsNullOrEmpty(_sortOrder))
+        {
+            result = _sortOrder switch
+            {
+                "priceAsc" => result.OrderBy(p => p.NewPrice),
+                "priceDesc" => result.OrderByDescending(p => p.NewPrice),
+                "besparelseAsc" => result.OrderBy(p => p.DiscountPercent),
+                "besparelseDesc" => result.OrderByDescending(p => p.DiscountPercent),
+                _ => result
+            };
+        }
+
+        return result.ToList();
     }
 
 

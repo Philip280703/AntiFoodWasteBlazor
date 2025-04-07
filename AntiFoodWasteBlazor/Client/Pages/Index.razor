@@ -41,6 +41,11 @@
             <option value="besparelseDesc">Besparelse-%: Høj til lav</option>
         </InputSelect>
     </div>
+
+    <div>
+        <label class="me-2">Søg efter produkt</label>
+        <input @bind="_searchText" class="form-control w-auto" placeholder="Søg efter produkt..." />
+    </div>
 </div>
 
 
@@ -101,6 +106,7 @@ else
 
     private string _sortOrder = "";
 
+    private string _searchText = "";
 
     private async Task GetFoodWasteProducts()   
     {
@@ -114,42 +120,40 @@ else
 
     }
 
-
     private List<FoodWasteProduct> SortProducts()
     {
-        // Hvis hverken butik eller sortering er valgt, returner hele listen
-        var filteredList = foodWasteProductList.AsEnumerable();
+        // Start med hele listen
+        IEnumerable<FoodWasteProduct> result = foodWasteProductList;
 
-        // Filtrer efter butik, hvis en butik er valgt
+        // Filtrér på butik, hvis valgt
         if (!string.IsNullOrEmpty(_selectedStore))
         {
-            filteredList = filteredList.Where(s => s.store.Name == _selectedStore);
+            result = result.Where(p => p.store.Name == _selectedStore);
         }
 
-        // Sortér efter pris eller besparelse, hvis en sorteringsordre er valgt
+        // Filtrér på søgefelt (beskrivelse), hvis noget er indtastet
+        if (!string.IsNullOrEmpty(_searchText))
+        {
+            result = result.Where(p =>
+                p.Description != null &&
+                p.Description.Contains(_searchText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        // Sortér, hvis sorteringsvalg er foretaget
         if (!string.IsNullOrEmpty(_sortOrder))
         {
-            switch (_sortOrder)
+            result = _sortOrder switch
             {
-                case "priceAsc":
-                    filteredList = filteredList.OrderBy(s => s.NewPrice);
-                    break;
-                case "priceDesc":
-                    filteredList = filteredList.OrderByDescending(s => s.NewPrice);
-                    break;
-                case "besparelseAsc":
-                    filteredList = filteredList.OrderBy(s => s.DiscountPercent);
-                    break;
-                case "besparelseDesc":
-                    filteredList = filteredList.OrderByDescending(s => s.DiscountPercent);
-                    break;
-            }
+                "priceAsc" => result.OrderBy(p => p.NewPrice),
+                "priceDesc" => result.OrderByDescending(p => p.NewPrice),
+                "besparelseAsc" => result.OrderBy(p => p.DiscountPercent),
+                "besparelseDesc" => result.OrderByDescending(p => p.DiscountPercent),
+                _ => result
+            };
         }
 
-        // Returner den filtrerede og sorterede liste
-        return filteredList.ToList();
-            
-        
+        return result.ToList();
+
     }
 
 

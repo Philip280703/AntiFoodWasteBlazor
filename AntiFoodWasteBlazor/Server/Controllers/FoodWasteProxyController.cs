@@ -32,5 +32,7 @@ namespace AntiFoodWasteBlazor.Server.Controllers
 
 			return Content(content, "application/json");
 		}
-	}
+
+
+    }
 }

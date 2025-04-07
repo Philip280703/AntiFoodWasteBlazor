@@ -1,5 +1,6 @@
 ﻿@using AntiFoodWasteBlazor.Client.Services
 @using AntiFoodWasteBlazor.Shared.Models
+@inject NavigationManager navigationManager
 
 @page "/"
 
@@ -51,7 +52,7 @@
     <div class="product-grid">
         @foreach (var product in filteredProducts)
         {
-            <div class="product-card">
+            <div class="product-card" @onclick="() => NavigateToProductPage(product.store.Zip, product.store.Id, product.Ean)">
                 @if (!string.IsNullOrEmpty(product.ImageUrl))
                 {
                     <img src="@product.ImageUrl" alt="@product.Description" />
@@ -101,9 +102,9 @@ else
     private string _sortOrder = "";
 
 
-	private async Task GetFoodWasteProducts()   
-	{
-		foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsAsync(_zipCode);
+    private async Task GetFoodWasteProducts()   
+    {
+        foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsAsync(_zipCode);
 
         _uniqueStores = foodWasteProductList
             .Select(p => p.store.Name)
@@ -112,7 +113,7 @@ else
             .ToList();
 
         filteredProducts = new List<FoodWasteProduct>(foodWasteProductList);
-	}
+    }
 
     private async Task OnStoreChanged(ChangeEventArgs e)
     {
@@ -137,6 +138,12 @@ else
     {
         showZipModal = false;
         await GetFoodWasteProducts();
+    }
+
+
+    private void NavigateToProductPage(string zipcode, string storeID, string ean)
+    {
+        navigationManager.NavigateTo($"/product/{zipcode}/{storeID}/{ean}");
     }
 
 }

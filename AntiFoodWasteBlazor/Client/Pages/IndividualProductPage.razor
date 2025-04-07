@@ -1,0 +1,68 @@
+﻿@using AntiFoodWasteBlazor.Client.Services
+@using AntiFoodWasteBlazor.Shared.Models
+@page "/product/{ZipCode}/{StoreID}/{Ean}"
+
+<h4>Produkt detaljer</h4>
+
+<div class="product-card">
+	@if (_foodWasteProduct != null)
+	{
+		<div class="product-card">
+			@if (!string.IsNullOrEmpty(_foodWasteProduct.ImageUrl))
+			{
+				<img src="@_foodWasteProduct.ImageUrl" alt="@_foodWasteProduct.Description" />
+			}
+			else
+			{
+				<img src="https://via.placeholder.com/150" alt="Placeholder image" />
+			}
+			<h4>@_foodWasteProduct.Description</h4>
+			<p><b>Pris: @_foodWasteProduct.NewPrice kr.</b></p>
+			<p>Original pris: @_foodWasteProduct.OriginalPrice kr.</p>
+			<p>Besparelse: @_foodWasteProduct.DiscountPercent %</p>
+			<p>Tilbuds udløbsdato: @_foodWasteProduct.EndDate.ToShortDateString()</p>
+			<p>EAN: @_foodWasteProduct.Ean</p>
+			<p>Stock count: @_foodWasteProduct.StockCount</p>
+			<p>Stock unit: @_foodWasteProduct.StockUnit</p>
+			<p></p>
+			<p>Sidste opdatering på tilbudet: @_foodWasteProduct.LastUpdate.ToShortDateString(), kl. @_foodWasteProduct.LastUpdate.ToShortTimeString()</p>
+			<p></p>
+			<h5>Butik information</h5>
+			<p>Butik: @_foodWasteProduct.store.Name</p>
+			<p>Adresse: @_foodWasteProduct.store.Street, @_foodWasteProduct.store.Zip @_foodWasteProduct.store.City</p>
+			
+		</div>
+	}
+	else
+	{
+		<p>Produkt ikke fundet.</p>
+	}
+</div>
+
+
+
+
+@code {
+	[Parameter]
+	public string ZipCode { get; set; } 
+	[Parameter]
+	public string StoreID { get; set; }
+	[Parameter]
+	public string Ean { get; set; }
+
+
+	[Inject]
+	private SallingFoodWasteService SallingFoodWasteService { get; set; }
+
+	private List<FoodWasteProduct> _foodWasteProductList = new List<FoodWasteProduct>();
+	private FoodWasteProduct _foodWasteProduct;
+	private Store _store;
+
+	protected async override Task OnInitializedAsync()
+	{
+		_foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsBasedOnStoreIDAsync(ZipCode, StoreID);
+		_foodWasteProduct = _foodWasteProductList.FirstOrDefault(p => p.Ean == Ean);
+		
+	}
+
+}

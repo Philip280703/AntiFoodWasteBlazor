@@ -1,6 +1,6 @@
 ﻿@using AntiFoodWasteBlazor.Client.Services
 @using AntiFoodWasteBlazor.Shared.Models
-@* @inject NavigationManager navigationManager *@
+@inject NavigationManager navigationManager
 
 @page "/"
 
@@ -52,7 +52,7 @@
     <div class="product-grid">
         @foreach (var product in filteredProducts)
         {
-            <div class="product-card">
+            <div class="product-card" @onclick="() => NavigateToProductPage(product.store.Zip, product.store.Id, product.Ean)">
                 @if (!string.IsNullOrEmpty(product.ImageUrl))
                 {
                     <img src="@product.ImageUrl" alt="@product.Description" />
@@ -141,9 +141,9 @@ else
     }
 
 
-    // private void NavigateToProductPage(string storeID, string ean)
-    // {
-    //     navigationManager.NavigateTo($"/product/{storeID}/{ean}");
-    // }
+    private void NavigateToProductPage(string zipcode, string storeID, string ean)
+    {
+        navigationManager.NavigateTo($"/product/{zipcode}/{storeID}/{ean}");
+    }
 
 }

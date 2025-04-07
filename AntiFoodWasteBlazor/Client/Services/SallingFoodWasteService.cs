@@ -77,13 +77,13 @@ namespace AntiFoodWasteBlazor.Client.Services
         /// </summary>
         /// <param name="storeID"></param>
         /// <returns></returns>
-        public async Task<List<FoodWasteProduct>> GetFoodWasteProductsBasedOnStoreIDAsync(string? storeID)
+        public async Task<List<FoodWasteProduct>> GetFoodWasteProductsBasedOnStoreIDAsync(string zipCode, string storeID)
         {
             var result = new List<FoodWasteProduct>();
 
-            var requestUri = $"api/foodwasteproxy/{storeID}"; // kald til backend
+			var requestUri = $"api/storeproxy?zipCode={zipCode}&storeID={storeID}";
 
-            var response = await _httpClient.GetAsync(requestUri);
+			var response = await _httpClient.GetAsync(requestUri);
             if (!response.IsSuccessStatusCode)
                 return result;
 

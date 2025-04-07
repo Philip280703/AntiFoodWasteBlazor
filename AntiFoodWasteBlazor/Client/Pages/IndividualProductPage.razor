@@ -1,18 +1,18 @@
 ﻿@using AntiFoodWasteBlazor.Client.Services
 @using AntiFoodWasteBlazor.Shared.Models
-@page "/product/{StoreID}/{Ean}"
+@page "/product/{ZipCode}/{StoreID}/{Ean}"
 
 <h3>IndividualProductPage</h3>
 
 
-
-
-
 @code {
 	[Parameter]
-	public string ?StoreID { get; set; }
+	public string ZipCode { get; set; } 
+	[Parameter]
+	public string StoreID { get; set; }
 	[Parameter]
 	public string Ean { get; set; }
+
 
 	[Inject]
 	private SallingFoodWasteService SallingFoodWasteService { get; set; }
@@ -23,7 +23,7 @@
 
 	protected async override Task OnInitializedAsync()
 	{
-		foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsBasedOnStoreIDAsync(StoreID);
+		foodWasteProductList = await SallingFoodWasteService.GetFoodWasteProductsBasedOnStoreIDAsync(ZipCode, StoreID);
 		
 	}
 

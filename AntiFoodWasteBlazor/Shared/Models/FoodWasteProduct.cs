@@ -14,7 +14,8 @@ namespace AntiFoodWasteBlazor.Shared.Models
         public decimal OriginalPrice { get; set; }
         public decimal DiscountPercent { get; set; } 
 		public string ImageUrl { get; set; }
-        public DateTime EndDate { get; set; } 
+        public DateTime EndDate { get; set; }
+        public DateTime LastUpdate { get; set; }
         public decimal StockCount { get; set; }
         public string StockUnit { get; set; }
 		public Store store { get; set; }    

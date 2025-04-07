@@ -37,6 +37,8 @@
             <option value="">Standard</option>
             <option value="priceAsc">Pris: Lav til høj</option>
             <option value="priceDesc">Pris: Høj til lav</option>
+            <option value="besparelseAsc">Besparelse-%: lav til høj</option>
+            <option value="besparelseDesc">Besparelse-%: Høj til lav</option>
         </InputSelect>
     </div>
 </div>
@@ -115,32 +117,39 @@ else
 
     private List<FoodWasteProduct> SortProducts()
     {
-        if (string.IsNullOrEmpty(_selectedStore))
+        // Hvis hverken butik eller sortering er valgt, returner hele listen
+        var filteredList = foodWasteProductList.AsEnumerable();
+
+        // Filtrer efter butik, hvis en butik er valgt
+        if (!string.IsNullOrEmpty(_selectedStore))
         {
-            return foodWasteProductList;
+            filteredList = filteredList.Where(s => s.store.Name == _selectedStore);
         }
-        else
+
+        // Sortér efter pris eller besparelse, hvis en sorteringsordre er valgt
+        if (!string.IsNullOrEmpty(_sortOrder))
         {
-            if (_sortOrder == "priceAsc")
+            switch (_sortOrder)
             {
-                return foodWasteProductList
-                    .Where(s => s.store.Name == _selectedStore)
-                    .OrderBy(s => s.NewPrice)
-                    .ToList();
+                case "priceAsc":
+                    filteredList = filteredList.OrderBy(s => s.NewPrice);
+                    break;
+                case "priceDesc":
+                    filteredList = filteredList.OrderByDescending(s => s.NewPrice);
+                    break;
+                case "besparelseAsc":
+                    filteredList = filteredList.OrderBy(s => s.DiscountPercent);
+                    break;
+                case "besparelseDesc":
+                    filteredList = filteredList.OrderByDescending(s => s.DiscountPercent);
+                    break;
             }
-            else if (_sortOrder == "priceDesc")
-            {
-                return foodWasteProductList
-                    .Where(s => s.store.Name == _selectedStore)
-                    .OrderByDescending(s => s.NewPrice)
-                    .ToList();
-            }
-            else
-            {
-                return foodWasteProductList.Where(s => s.store.Name == _selectedStore).ToList();
-            }
+        }
+
+        // Returner den filtrerede og sorterede liste
+        return filteredList.ToList();
             
-        }
+        
     }
 
 

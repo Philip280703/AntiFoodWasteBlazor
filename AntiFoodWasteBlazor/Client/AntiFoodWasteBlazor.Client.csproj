@@ -2,9 +2,11 @@
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
+	  <StaticWebAssetBasePath>/</StaticWebAssetBasePath>
+	  <ImplicitUsings>enable</ImplicitUsings>
     <ServiceWorkerAssetsManifest>service-worker-assets.js</ServiceWorkerAssetsManifest>
   </PropertyGroup>
+	
   <ItemGroup>
     <None Remove="Pages\IndividualProductPage.razor.css" />
   </ItemGroup>
